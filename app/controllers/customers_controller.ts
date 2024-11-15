@@ -1,3 +1,4 @@
+import CustomerNotFoundException from '#exceptions/customer_not_found_exception'
 import Customer from '#models/customer'
 import { createCustomerValidator } from '#validators/customer'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -76,7 +77,11 @@ export default class CustomersController {
   }
 
   async update({ request, response, params }: HttpContext) {
-    const customer = await Customer.findOrFail(params.id)
+    const customer = await Customer.find(params.id)
+
+    if (!customer) {
+      throw new CustomerNotFoundException(params.id)
+    }
 
     const customerData = await request.validateUsing(createCustomerValidator)
 
@@ -92,7 +97,11 @@ export default class CustomersController {
   }
 
   async delete({ response, params }: HttpContext) {
-    const customer = await Customer.findOrFail(params.id)
+    const customer = await Customer.find(params.id)
+
+    if (!customer) {
+      throw new CustomerNotFoundException(params.id)
+    }
 
     await db.transaction(async (trx) => {
       await customer.related('address').query().delete()
