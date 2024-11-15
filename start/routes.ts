@@ -24,4 +24,4 @@ router
   .as('auth.logout')
   .use(middleware.auth())
   .prefix('auth')
-router.get('/me', [AuthController, 'me']).as('auth.me').prefix('auth')
+router.get('/me', [AuthController, 'me']).as('auth.me').use(middleware.auth()).prefix('auth')
