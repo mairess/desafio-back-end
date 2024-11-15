@@ -8,7 +8,9 @@ export default class AuthController {
 
     const createdUser = await User.create(data)
 
-    const serializedUser = createdUser.serialize({ fields: ['fullName', 'createdAt', 'id'] })
+    const serializedUser = createdUser.serialize({
+      fields: ['fullName', 'email', 'id'],
+    })
 
     return response.created(serializedUser)
   }

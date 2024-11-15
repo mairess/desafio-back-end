@@ -9,11 +9,14 @@ export default class Customer extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column()
-  declare name: string
+  @column({ columnName: 'full_name' })
+  declare fullName: string | null
 
   @column()
   declare cpf: string
+
+  @column()
+  declare email: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
