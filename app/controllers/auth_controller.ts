@@ -4,15 +4,17 @@ import { loginValidator, registerValidator } from '#validators/auth'
 
 export default class AuthController {
   async register({ request, response }: HttpContext) {
-    const data = await request.validateUsing(registerValidator)
+    const userData = await request.validateUsing(registerValidator)
 
-    const createdUser = await User.create(data)
+    const createdUser = await User.create(userData)
 
-    const serializedUser = createdUser.serialize({
-      fields: ['fullName', 'email', 'id'],
+    const user = createdUser.serialize({
+      fields: {
+        omit: ['createdAt', 'updatedAt'],
+      },
     })
 
-    return response.created(serializedUser)
+    return response.created(user)
   }
 
   async login({ request, response }: HttpContext) {

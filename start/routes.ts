@@ -30,5 +30,9 @@ router
 router
   .group(() => {
     router.get('/index', [CustomersController, 'index']).as('customer.index')
+    router.get('/show/:id', [CustomersController, 'show']).as('customer.show')
+    router.post('/create', [CustomersController, 'store']).as('customer.store')
+    router.patch('/update/:id', [CustomersController, 'update']).as('customer.update')
+    router.delete('/delete/:id', [CustomersController, 'delete']).as('customer.delete')
   })
   .prefix('customers')

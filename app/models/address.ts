@@ -3,7 +3,7 @@ import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import Customer from './customer.js'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
-export default class Adress extends BaseModel {
+export default class Address extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
