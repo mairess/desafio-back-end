@@ -6,14 +6,34 @@ export default class AuthController {
   async register({ request, response }: HttpContext) {
     const data = await request.validateUsing(registerValidator)
 
-    const user = await User.create(data)
+    const createdUser = await User.create(data)
 
-    return response.created(user)
+    const serializedUser = createdUser.serialize({ fields: ['fullName', 'createdAt', 'id'] })
+
+    return response.created(serializedUser)
   }
 
-  async login({}: HttpContext) {}
+  async login({ request, response }: HttpContext) {
+    const { email, password } = await request.validateUsing(loginValidator)
 
-  async logout({}: HttpContext) {}
+    const user = await User.verifyCredentials(email, password)
 
-  async me({}: HttpContext) {}
+    const userToken = await User.accessTokens.create(user)
+
+    return response.ok({ token: userToken.value?.release() })
+  }
+
+  async logout({ auth, response }: HttpContext) {
+    const user = auth.user!
+
+    await User.accessTokens.delete(user, user.currentAccessToken.identifier)
+
+    return response.ok({ message: 'Logged out successfully!' })
+  }
+
+  async me({ auth, response }: HttpContext) {
+    await auth.check()
+
+    return response.ok(auth.user)
+  }
 }
