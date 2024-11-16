@@ -37,6 +37,10 @@ export default class CustomersController {
       })
       .first()
 
+    if (!customerSales) {
+      throw new CustomerNotFoundException(params.id)
+    }
+
     response.ok(
       customerSales?.serialize({
         fields: {

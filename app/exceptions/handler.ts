@@ -16,7 +16,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
   async handle(error: unknown, ctx: HttpContext) {
     if (error instanceof CustomerNotFoundException) {
       return ctx.response.status(error.status).send({
-        errors: [{ message: error.message, rule: 'custom.not_found', field: 'customerId' }],
+        errors: [{ message: error.message, rule: 'customer.notFound', field: 'customerId' }],
       })
     }
     return super.handle(error, ctx)
