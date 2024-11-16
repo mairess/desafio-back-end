@@ -9,11 +9,14 @@ export default class Customer extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column()
-  declare name: string
+  @column({ columnName: 'full_name' })
+  declare fullName: string | null
 
   @column()
   declare cpf: string
+
+  @column()
+  declare email: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -22,10 +25,10 @@ export default class Customer extends BaseModel {
   declare updatedAt: DateTime
 
   @hasOne(() => Address)
-  declare addresses: HasOne<typeof Address>
+  declare address: HasOne<typeof Address>
 
-  @hasMany(() => Phone)
-  declare phones: HasMany<typeof Phone>
+  @hasOne(() => Phone)
+  declare phone: HasOne<typeof Phone>
 
   @hasMany(() => Sale)
   declare sales: HasMany<typeof Sale>

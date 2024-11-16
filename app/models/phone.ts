@@ -10,8 +10,8 @@ export default class Phone extends BaseModel {
   @column()
   declare customerId: number
 
-  @column()
-  declare number: string
+  @column({ columnName: 'phone_number' })
+  declare phoneNumber: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
