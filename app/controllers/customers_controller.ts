@@ -1,6 +1,6 @@
 import CustomerNotFoundException from '#exceptions/customer_not_found_exception'
 import Customer from '#models/customer'
-import { createCustomerValidator } from '#validators/customer'
+import { createCustomerValidator, updateCustomerValidator } from '#validators/customer'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
@@ -83,7 +83,9 @@ export default class CustomersController {
       throw new CustomerNotFoundException(params.id)
     }
 
-    const customerData = await request.validateUsing(createCustomerValidator)
+    const customerData = await request.validateUsing(updateCustomerValidator, {
+      meta: { customerId: customer.id },
+    })
 
     customer.merge(customerData).save()
 

@@ -12,12 +12,6 @@ const CustomersController = () => import('#controllers/customers_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
-})
-
 router
   .group(() => {
     router.post('/signup', [AuthController, 'register']).as('auth.register')
