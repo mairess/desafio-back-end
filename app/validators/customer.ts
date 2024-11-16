@@ -24,7 +24,7 @@ export const createCustomerValidator = vine.compile(
 
 export const updateCustomerValidator = vine.compile(
   vine.object({
-    fullName: vine.string().trim().minLength(3).maxLength(50),
+    fullName: vine.string().trim().minLength(3).maxLength(50).optional(),
     cpf: vine
       .string()
       .trim()
@@ -36,7 +36,8 @@ export const updateCustomerValidator = vine.compile(
           .where('cpf', value)
           .first()
         return !customer
-      }),
+      })
+      .optional(),
     email: vine
       .string()
       .trim()
@@ -48,6 +49,7 @@ export const updateCustomerValidator = vine.compile(
           .where('email', value)
           .first()
         return !customer
-      }),
+      })
+      .optional(),
   })
 )

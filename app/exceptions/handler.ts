@@ -1,6 +1,7 @@
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import CustomerNotFoundException from './customer_not_found_exception.js'
+import ProductNotFoundException from './product_not_found_exception.js'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -19,6 +20,13 @@ export default class HttpExceptionHandler extends ExceptionHandler {
         errors: [{ message: error.message, rule: 'customer.notFound', field: 'customerId' }],
       })
     }
+
+    if (error instanceof ProductNotFoundException) {
+      return ctx.response.status(error.status).send({
+        errors: [{ message: error.message, rule: 'product.notFound', field: 'productId' }],
+      })
+    }
+
     return super.handle(error, ctx)
   }
 
