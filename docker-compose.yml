@@ -4,12 +4,14 @@ services:
     build:
       context: .
     container_name: betalent_backend
+    restart: unless-stopped
     volumes:
       - .:/app
     ports:
       - "3333:3333"
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
       - DB_HOST=database
       - DB_PORT=3306
@@ -20,8 +22,13 @@ services:
   database:
     image: mysql:latest
     container_name: betalent_db
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: adonis_db
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
+      timeout: 10s
+      retries: 5
     ports:
       - "3306:3306"
