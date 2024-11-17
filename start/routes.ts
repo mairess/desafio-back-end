@@ -26,8 +26,8 @@ router
 
 router
   .group(() => {
-    router.get('/index', [CustomersController, 'index']).as('customer.index')
-    router.get('/show/:id', [CustomersController, 'show']).as('customer.show')
+    router.get('/list', [CustomersController, 'index']).as('customer.index')
+    router.get('/details/:id', [CustomersController, 'show']).as('customer.show')
     router.post('/create', [CustomersController, 'store']).as('customer.store')
     router.patch('/update/:id', [CustomersController, 'update']).as('customer.update')
     router.delete('/delete/:id', [CustomersController, 'destroy']).as('customer.destroy')
@@ -37,8 +37,8 @@ router
 
 router
   .group(() => {
-    router.get('/index', [ProductsController, 'index']).as('product.index')
-    router.get('/show/:id', [ProductsController, 'show']).as('product.show')
+    router.get('/list', [ProductsController, 'index']).as('product.index')
+    router.get('/details/:id', [ProductsController, 'show']).as('product.show')
     router.post('/create', [ProductsController, 'store']).as('product.store')
     router.patch('/update/:id', [ProductsController, 'update']).as('product.update')
     router.delete('/delete/:id', [ProductsController, 'destroy']).as('product.destroy')
