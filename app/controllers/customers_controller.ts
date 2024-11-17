@@ -91,7 +91,7 @@ export default class CustomersController {
       meta: { customerId: customer.id },
     })
 
-    customer.merge(customerData).save()
+    await customer.merge(customerData).save()
 
     return response.ok(
       customer.serialize({
@@ -102,7 +102,7 @@ export default class CustomersController {
     )
   }
 
-  async delete({ response, params }: HttpContext) {
+  async destroy({ response, params }: HttpContext) {
     const customer = await Customer.find(params.id)
 
     if (!customer) {
@@ -110,11 +110,11 @@ export default class CustomersController {
     }
 
     await db.transaction(async (trx) => {
-      await customer.related('address').query().delete()
+      await customer.related('address').query().useTransaction(trx).delete()
 
-      await customer.related('phone').query().delete()
+      await customer.related('phone').query().useTransaction(trx).delete()
 
-      await customer.related('sales').query().delete()
+      await customer.related('sales').query().useTransaction(trx).delete()
 
       await customer.useTransaction(trx).delete()
     })
