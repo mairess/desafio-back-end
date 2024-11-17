@@ -13,6 +13,7 @@ import { middleware } from './kernel.js'
 const AuthController = () => import('#controllers/auth_controller')
 const CustomersController = () => import('#controllers/customers_controller')
 const ProductsController = () => import('#controllers/products_controller')
+const PhonesController = () => import('#controllers/phones_controller')
 const SalesController = () => import('#controllers/sales_controller')
 
 router
@@ -26,8 +27,8 @@ router
 
 router
   .group(() => {
-    router.get('/index', [CustomersController, 'index']).as('customer.index')
-    router.get('/show/:id', [CustomersController, 'show']).as('customer.show')
+    router.get('/list', [CustomersController, 'index']).as('customer.index')
+    router.get('/details/:id', [CustomersController, 'show']).as('customer.show')
     router.post('/create', [CustomersController, 'store']).as('customer.store')
     router.patch('/update/:id', [CustomersController, 'update']).as('customer.update')
     router.delete('/delete/:id', [CustomersController, 'destroy']).as('customer.destroy')
@@ -37,13 +38,26 @@ router
 
 router
   .group(() => {
-    router.get('/index', [ProductsController, 'index']).as('product.index')
-    router.get('/show/:id', [ProductsController, 'show']).as('product.show')
+    router.get('/list', [ProductsController, 'index']).as('product.index')
+    router.get('/details/:id', [ProductsController, 'show']).as('product.show')
     router.post('/create', [ProductsController, 'store']).as('product.store')
     router.patch('/update/:id', [ProductsController, 'update']).as('product.update')
     router.delete('/delete/:id', [ProductsController, 'destroy']).as('product.destroy')
   })
   .prefix('products')
+  .use(middleware.auth())
+
+router
+  .group(() => {
+    router.post('/create/:customerId', [PhonesController, 'store']).as('phone.store')
+    router
+      .patch('/update/:id/customer/:customerId', [PhonesController, 'update'])
+      .as('phone.update')
+    router
+      .delete('/delete/:id/customer/:customerId', [PhonesController, 'destroy'])
+      .as('phone.destroy')
+  })
+  .prefix('phones')
   .use(middleware.auth())
 
 router
