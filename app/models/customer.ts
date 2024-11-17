@@ -27,8 +27,8 @@ export default class Customer extends BaseModel {
   @hasOne(() => Address)
   declare address: HasOne<typeof Address>
 
-  @hasOne(() => Phone)
-  declare phone: HasOne<typeof Phone>
+  @hasMany(() => Phone)
+  declare phones: HasMany<typeof Phone>
 
   @hasMany(() => Sale)
   declare sales: HasMany<typeof Sale>

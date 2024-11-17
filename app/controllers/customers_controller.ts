@@ -24,7 +24,7 @@ export default class CustomersController {
     const customerSales = await Customer.query()
       .where('id', params.id)
       .preload('address')
-      .preload('phone')
+      .preload('phones')
       .preload('sales', (salesQuery) => {
         salesQuery.preload('product').orderBy('createdAt', 'desc')
 
@@ -47,8 +47,10 @@ export default class CustomersController {
           address: {
             fields: ['street', 'number', 'neighborhood', 'city', 'state', 'zipCode'],
           },
-          phone: {
-            fields: ['phoneNumber'],
+          phones: {
+            fields: {
+              omit: ['customerId'],
+            },
           },
           sales: {
             fields: ['id', 'quantity', 'unitPrice', 'totalPrice', 'createdAt'],
@@ -109,7 +111,7 @@ export default class CustomersController {
     await db.transaction(async (trx) => {
       await customer.related('address').query().useTransaction(trx).delete()
 
-      await customer.related('phone').query().useTransaction(trx).delete()
+      await customer.related('phones').query().useTransaction(trx).delete()
 
       await customer.related('sales').query().useTransaction(trx).delete()
 
