@@ -2,7 +2,6 @@ import ProductNotFoundException from '#exceptions/product_not_found_exception'
 import Product from '#models/product'
 import { createProductValidator, updateProductValidator } from '#validators/product'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
 
 export default class ProductsController {
@@ -51,7 +50,7 @@ export default class ProductsController {
 
     const productData = await request.validateUsing(updateProductValidator)
 
-    product.merge(productData).save()
+    await product.merge(productData).save()
 
     response.ok(
       product.serialize({
@@ -69,11 +68,9 @@ export default class ProductsController {
       throw new ProductNotFoundException(params.id)
     }
 
-    await db.transaction(async (trx) => {
-      product.deletedAt = DateTime.now()
+    product.deletedAt = DateTime.now()
 
-      await product.useTransaction(trx).save()
-    })
+    await product.save()
 
     return response.ok({
       message: 'Product deleted successfully!',
