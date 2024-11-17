@@ -43,9 +43,6 @@ export default class CustomersController {
 
     response.ok(
       customerSales?.serialize({
-        fields: {
-          omit: ['createdAt', 'updatedAt'],
-        },
         relations: {
           address: {
             fields: ['street', 'number', 'neighborhood', 'city', 'state', 'zipCode'],
