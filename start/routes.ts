@@ -13,6 +13,7 @@ import { middleware } from './kernel.js'
 const AuthController = () => import('#controllers/auth_controller')
 const CustomersController = () => import('#controllers/customers_controller')
 const ProductsController = () => import('#controllers/products_controller')
+const PhonesController = () => import('#controllers/phones_controller')
 const SalesController = () => import('#controllers/sales_controller')
 
 router
@@ -44,6 +45,19 @@ router
     router.delete('/delete/:id', [ProductsController, 'destroy']).as('product.destroy')
   })
   .prefix('products')
+  .use(middleware.auth())
+
+router
+  .group(() => {
+    router.post('/create/:customerId', [PhonesController, 'store']).as('phone.store')
+    router
+      .patch('/update/:id/customer/:customerId', [PhonesController, 'update'])
+      .as('phone.update')
+    router
+      .delete('/delete/:id/customer/:customerId', [PhonesController, 'destroy'])
+      .as('phone.destroy')
+  })
+  .prefix('phones')
   .use(middleware.auth())
 
 router

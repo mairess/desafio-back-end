@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('customer_id').unsigned()
-      table.string('phone_number')
+      table.string('phone_number').unique()
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
