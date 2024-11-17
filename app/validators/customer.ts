@@ -6,7 +6,7 @@ export const createCustomerValidator = vine.compile(
     cpf: vine
       .string()
       .trim()
-      .regex(/\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/)
+      .regex(/^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/)
       .unique(async (db, value) => {
         const customer = await db.from('customers').where('cpf', value).first()
         return !customer
