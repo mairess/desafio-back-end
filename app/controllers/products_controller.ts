@@ -62,7 +62,7 @@ export default class ProductsController {
     )
   }
 
-  async delete({ response, params }: HttpContext) {
+  async destroy({ response, params }: HttpContext) {
     const product = await Product.find(params.id)
 
     if (!product || product.deletedAt !== null) {

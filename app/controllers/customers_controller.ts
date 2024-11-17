@@ -102,7 +102,7 @@ export default class CustomersController {
     )
   }
 
-  async delete({ response, params }: HttpContext) {
+  async destroy({ response, params }: HttpContext) {
     const customer = await Customer.find(params.id)
 
     if (!customer) {
