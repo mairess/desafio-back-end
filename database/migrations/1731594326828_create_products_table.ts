@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.string('name')
       table.string('description')
       table.float('price')
+      table.integer('stock')
       table.timestamp('created_at')
       table.timestamp('updated_at')
       table.timestamp('deleted_at')
