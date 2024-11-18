@@ -38,11 +38,13 @@ router
 
 router
   .group(() => {
-    router.post('/create', [AddressesController, 'store']).as('address.store')
-    router.patch('/update/:id', [AddressesController, 'update']).as('address.update')
-    // router
-    //   .delete('/delete/:id/customer/:customerId', [AddressesController, 'destroy'])
-    //   .as('address.destroy')
+    router.post('/create/customers/:customerId', [AddressesController, 'store']).as('address.store')
+    router
+      .patch('/update/:id/customers/:customerId', [AddressesController, 'update'])
+      .as('address.update')
+    router
+      .delete('/delete/:id/customers/:customerId', [AddressesController, 'destroy'])
+      .as('address.destroy')
   })
   .prefix('addresses')
   .use(middleware.auth())
@@ -71,12 +73,12 @@ router
 
 router
   .group(() => {
-    router.post('/create/:customerId', [PhonesController, 'store']).as('phone.store')
+    router.post('/create/customers/:customerId', [PhonesController, 'store']).as('phone.store')
     router
-      .patch('/update/:id/customer/:customerId', [PhonesController, 'update'])
+      .patch('/update/:id/customers/:customerId', [PhonesController, 'update'])
       .as('phone.update')
     router
-      .delete('/delete/:id/customer/:customerId', [PhonesController, 'destroy'])
+      .delete('/delete/:id/customers/:customerId', [PhonesController, 'destroy'])
       .as('phone.destroy')
   })
   .prefix('phones')

@@ -2,7 +2,6 @@ import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 
 export const createAddressValidator = vine.compile(
   vine.object({
-    customerId: vine.number().positive(),
     street: vine.string(),
     number: vine.number().positive(),
     neighborhood: vine.string(),
@@ -17,7 +16,6 @@ export const createAddressValidator = vine.compile(
 
 export const updateAddressValidator = vine.compile(
   vine.object({
-    customerId: vine.number().positive(),
     street: vine.string().optional(),
     number: vine.number().positive().optional(),
     neighborhood: vine.string().optional(),

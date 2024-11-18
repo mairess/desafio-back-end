@@ -6,12 +6,12 @@ import { createAddressValidator, updateAddressValidator } from '#validators/addr
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class AddressesController {
-  async store({ request, response }: HttpContext) {
+  async store({ request, response, params }: HttpContext) {
     const addressData = await request.validateUsing(createAddressValidator)
-    const customer = await Customer.find(addressData.customerId)
+    const customer = await Customer.find(params.customerId)
 
     if (!customer) {
-      throw new CustomerNotFoundException(addressData.customerId.toString())
+      throw new CustomerNotFoundException(params.customerId.toString())
     }
 
     const address = await customer.related('address').create(addressData)
@@ -28,11 +28,11 @@ export default class AddressesController {
   async update({ request, response, params }: HttpContext) {
     const addressData = await request.validateUsing(updateAddressValidator)
 
-    const customer = await Customer.find(addressData.customerId)
+    const customer = await Customer.find(params.customerId)
     const address = await Address.find(params.id)
 
     if (!customer) {
-      throw new CustomerNotFoundException(addressData.customerId.toString())
+      throw new CustomerNotFoundException(params.customerId.toString())
     }
 
     if (!address || address.customerId !== customer.id) {
@@ -50,20 +50,20 @@ export default class AddressesController {
     )
   }
 
-  //   async destroy({ response, params }: HttpContext) {
-  //     const customer = await Customer.find(params.customerId)
-  //     const phone = await Phone.find(params.id)
+  async destroy({ response, params }: HttpContext) {
+    const address = await Address.find(params.id)
+    const customer = await Customer.find(params.customerId)
 
-  //     if (!customer) {
-  //       throw new CustomerNotFoundException(params.customerId)
-  //     }
+    if (!customer) {
+      throw new CustomerNotFoundException(params.customerId)
+    }
 
-  //     if (!phone || phone.customerId !== customer.id) {
-  //       throw new PhoneNotFoundException(params.id)
-  //     }
+    if (!address || address.customerId !== customer.id) {
+      throw new AddressNotFoundException(params.id)
+    }
 
-  //     await phone.delete()
+    await address.delete()
 
-  //     return response.ok({ message: 'Phone deleted successfully!' })
-  //   }
+    return response.ok({ message: 'Address deleted successfully!' })
+  }
 }
