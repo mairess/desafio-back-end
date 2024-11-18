@@ -1,5 +1,4 @@
-import AddressNotFoundException from '#exceptions/address_not_found_exception'
-import CustomerNotFoundException from '#exceptions/customer_not_found_exception'
+import NotFoundException from '#exceptions/not_found_exception'
 import Address from '#models/address'
 import Customer from '#models/customer'
 import { createAddressValidator, updateAddressValidator } from '#validators/address'
@@ -11,7 +10,7 @@ export default class AddressesController {
     const customer = await Customer.find(params.customerId)
 
     if (!customer) {
-      throw new CustomerNotFoundException(params.customerId.toString())
+      throw new NotFoundException('Customer', params.customerId.toString())
     }
 
     const address = await customer.related('address').create(addressData)
@@ -32,11 +31,11 @@ export default class AddressesController {
     const address = await Address.find(params.id)
 
     if (!customer) {
-      throw new CustomerNotFoundException(params.customerId.toString())
+      throw new NotFoundException('Customer', params.customerId.toString())
     }
 
     if (!address || address.customerId !== customer.id) {
-      throw new AddressNotFoundException(params.id)
+      throw new NotFoundException('Address', params.id)
     }
 
     await address.merge(addressData).save()
@@ -55,11 +54,11 @@ export default class AddressesController {
     const customer = await Customer.find(params.customerId)
 
     if (!customer) {
-      throw new CustomerNotFoundException(params.customerId)
+      throw new NotFoundException('Customer', params.customerId.toString())
     }
 
     if (!address || address.customerId !== customer.id) {
-      throw new AddressNotFoundException(params.id)
+      throw new NotFoundException('Address', params.id)
     }
 
     await address.delete()

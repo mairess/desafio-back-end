@@ -1,5 +1,4 @@
-import CustomerNotFoundException from '#exceptions/customer_not_found_exception'
-import PhoneNotFoundException from '#exceptions/phone_not_found_exception'
+import NotFoundException from '#exceptions/not_found_exception'
 import Customer from '#models/customer'
 import Phone from '#models/phone'
 import { createPhoneValidator, updatePhoneValidator } from '#validators/phone'
@@ -11,7 +10,7 @@ export default class PhonesController {
     const phoneData = await request.validateUsing(createPhoneValidator)
 
     if (!customer) {
-      throw new CustomerNotFoundException(params.customerId)
+      throw new NotFoundException('Customer', params.customerId)
     }
 
     const phone = await customer.related('phones').create(phoneData)
@@ -30,11 +29,11 @@ export default class PhonesController {
     const phone = await Phone.find(params.id)
 
     if (!customer) {
-      throw new CustomerNotFoundException(params.customerId)
+      throw new NotFoundException('Customer', params.customerId)
     }
 
-    if (!phone || phone.customerId !== customer.id) {
-      throw new PhoneNotFoundException(params.id)
+    if (!phone || phone.id !== customer.id) {
+      throw new NotFoundException('Phone', params.id)
     }
 
     const phoneData = await request.validateUsing(updatePhoneValidator)
@@ -55,11 +54,11 @@ export default class PhonesController {
     const phone = await Phone.find(params.id)
 
     if (!customer) {
-      throw new CustomerNotFoundException(params.customerId)
+      throw new NotFoundException('Customer', params.customerId)
     }
 
     if (!phone || phone.customerId !== customer.id) {
-      throw new PhoneNotFoundException(params.id)
+      throw new NotFoundException('Phone', params.id)
     }
 
     await phone.delete()

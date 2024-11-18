@@ -1,4 +1,4 @@
-import ProductNotFoundException from '#exceptions/product_not_found_exception'
+import NotFoundException from '#exceptions/not_found_exception'
 import Product from '#models/product'
 import { createProductValidator, updateProductValidator } from '#validators/product'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -14,17 +14,17 @@ export default class ProductsController {
       .orderBy('name', 'asc')
       .paginate(page, limit)
 
-    response.ok(products)
+    return response.ok(products)
   }
 
   async show({ response, params }: HttpContext) {
     const product = await Product.query().where('id', params.id).first()
 
     if (!product) {
-      throw new ProductNotFoundException(params.id)
+      throw new NotFoundException('Product', params.id)
     }
 
-    response.ok(product)
+    return response.ok(product)
   }
 
   async store({ request, response }: HttpContext) {
@@ -45,14 +45,14 @@ export default class ProductsController {
     const product = await Product.find(params.id)
 
     if (!product) {
-      throw new ProductNotFoundException(params.id)
+      throw new NotFoundException('Product', params.id)
     }
 
     const productData = await request.validateUsing(updateProductValidator)
 
     await product.merge(productData).save()
 
-    response.ok(
+    return response.ok(
       product.serialize({
         fields: {
           omit: ['createdAt', 'updatedAt', 'deletedAt'],
@@ -65,7 +65,7 @@ export default class ProductsController {
     const product = await Product.find(params.id)
 
     if (!product || product.deletedAt !== null) {
-      throw new ProductNotFoundException(params.id)
+      throw new NotFoundException('Product', params.id)
     }
 
     product.deletedAt = DateTime.now()

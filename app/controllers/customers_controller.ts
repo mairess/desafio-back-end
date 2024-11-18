@@ -1,4 +1,4 @@
-import CustomerNotFoundException from '#exceptions/customer_not_found_exception'
+import NotFoundException from '#exceptions/not_found_exception'
 import Customer from '#models/customer'
 import { createCustomerValidator, updateCustomerValidator } from '#validators/customer'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -14,7 +14,7 @@ export default class CustomersController {
       .orderBy('id')
       .paginate(page, limit)
 
-    response.ok(customers)
+    return response.ok(customers)
   }
 
   async show({ request, response, params }: HttpContext) {
@@ -38,10 +38,10 @@ export default class CustomersController {
       .first()
 
     if (!customerSales) {
-      throw new CustomerNotFoundException(params.id)
+      throw new NotFoundException('Customer', params.id)
     }
 
-    response.ok(
+    return response.ok(
       customerSales?.serialize({
         relations: {
           address: {
@@ -81,7 +81,7 @@ export default class CustomersController {
     const customer = await Customer.find(params.id)
 
     if (!customer) {
-      throw new CustomerNotFoundException(params.id)
+      throw new NotFoundException('Customer', params.id)
     }
 
     const customerData = await request.validateUsing(updateCustomerValidator, {
@@ -103,7 +103,7 @@ export default class CustomersController {
     const customer = await Customer.find(params.id)
 
     if (!customer) {
-      throw new CustomerNotFoundException(params.id)
+      throw new NotFoundException('Customer', params.id)
     }
 
     await db.transaction(async (trx) => {

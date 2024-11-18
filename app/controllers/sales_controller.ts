@@ -1,7 +1,5 @@
-import CustomerNotFoundException from '#exceptions/customer_not_found_exception'
-import ProductNotFoundException from '#exceptions/product_not_found_exception'
+import NotFoundException from '#exceptions/not_found_exception'
 import ProductOutOfStockException from '#exceptions/product_out_of_stock_exception'
-import SaleNotFoundException from '#exceptions/sale_not_found_exception'
 import Customer from '#models/customer'
 import Product from '#models/product'
 import Sale from '#models/sale'
@@ -27,10 +25,10 @@ export default class SalesController {
       .first()
 
     if (!sale) {
-      throw new SaleNotFoundException(params.id)
+      throw new NotFoundException('Sale', params.id)
     }
 
-    response.ok(sale.serialize({ fields: { omit: ['updatedAt'] } }))
+    return response.ok(sale.serialize({ fields: { omit: ['updatedAt'] } }))
   }
 
   async store({ request, response }: HttpContext) {
@@ -40,7 +38,7 @@ export default class SalesController {
     const customer = await Customer.find(saleData.customerId)
 
     if (!product) {
-      throw new ProductNotFoundException(saleData.productId.toString())
+      throw new NotFoundException('Product', saleData.productId.toString())
     }
 
     if (product.stock === 0 || product.stock < saleData.quantity) {
@@ -48,7 +46,7 @@ export default class SalesController {
     }
 
     if (!customer) {
-      throw new CustomerNotFoundException(saleData.customerId.toString())
+      throw new NotFoundException('Customer', saleData.customerId.toString())
     }
 
     const totalPrice = this.calculateTotalPrice(product.price, saleData.quantity)
