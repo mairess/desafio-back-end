@@ -63,6 +63,8 @@ router
 router
   .group(() => {
     router.post('/create', [SalesController, 'store']).as('sale.store')
+    router.get('/list', [SalesController, 'index']).as('sale.index')
+    router.get('/details/:id', [SalesController, 'show']).as('sale.show')
   })
   .prefix('sales')
   .use(middleware.auth())

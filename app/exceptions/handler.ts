@@ -4,6 +4,7 @@ import CustomerNotFoundException from './customer_not_found_exception.js'
 import ProductNotFoundException from './product_not_found_exception.js'
 import ProductOutOfStockException from './product_out_of_stock_exception.js'
 import PhoneNotFoundException from './phone_not_found_exception.js'
+import SaleNotFoundException from './sale_not_found_exception.js'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -38,6 +39,12 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     if (error instanceof PhoneNotFoundException) {
       return ctx.response.status(error.status).send({
         errors: [{ message: error.message, rule: 'phone.notFound', field: 'phoneId' }],
+      })
+    }
+
+    if (error instanceof SaleNotFoundException) {
+      return ctx.response.status(error.status).send({
+        errors: [{ message: error.message, rule: 'sale.notFound', field: 'saleId' }],
       })
     }
 
