@@ -6,6 +6,7 @@ import ProductOutOfStockException from './product_out_of_stock_exception.js'
 import PhoneNotFoundException from './phone_not_found_exception.js'
 import SaleNotFoundException from './sale_not_found_exception.js'
 import UserNotFoundException from './user_not_found_exception.js'
+import AddressNotFoundException from './address_not_found_exception.js'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -52,6 +53,12 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     if (error instanceof UserNotFoundException) {
       return ctx.response.status(error.status).send({
         errors: [{ message: error.message, rule: 'user.notFound', field: 'userId' }],
+      })
+    }
+
+    if (error instanceof AddressNotFoundException) {
+      return ctx.response.status(error.status).send({
+        errors: [{ message: error.message, rule: 'address.notFound', field: 'addressId' }],
       })
     }
 

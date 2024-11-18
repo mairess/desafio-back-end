@@ -24,8 +24,8 @@ export default class Customer extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @hasOne(() => Address)
-  declare address: HasOne<typeof Address>
+  @hasMany(() => Address)
+  declare address: HasMany<typeof Address>
 
   @hasMany(() => Phone)
   declare phones: HasMany<typeof Phone>

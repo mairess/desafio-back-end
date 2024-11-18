@@ -45,12 +45,10 @@ export default class CustomersController {
       customerSales?.serialize({
         relations: {
           address: {
-            fields: ['street', 'number', 'neighborhood', 'city', 'state', 'zipCode'],
+            fields: ['id', 'street', 'number', 'neighborhood', 'city', 'state', 'zipCode'],
           },
           phones: {
-            fields: {
-              omit: ['customerId'],
-            },
+            fields: ['id', 'phoneNumber'],
           },
           sales: {
             fields: ['id', 'quantity', 'unitPrice', 'totalPrice', 'createdAt'],

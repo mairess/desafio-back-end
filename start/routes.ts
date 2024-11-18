@@ -9,8 +9,9 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
-const UsersController = () => import('#controllers/users_controller')
 
+const AddressesController = () => import('#controllers/addresses_controller')
+const UsersController = () => import('#controllers/users_controller')
 const AuthController = () => import('#controllers/auth_controller')
 const CustomersController = () => import('#controllers/customers_controller')
 const ProductsController = () => import('#controllers/products_controller')
@@ -37,6 +38,19 @@ router
 
 router
   .group(() => {
+    router.post('/create/customers/:customerId', [AddressesController, 'store']).as('address.store')
+    router
+      .patch('/update/:id/customers/:customerId', [AddressesController, 'update'])
+      .as('address.update')
+    router
+      .delete('/delete/:id/customers/:customerId', [AddressesController, 'destroy'])
+      .as('address.destroy')
+  })
+  .prefix('addresses')
+  .use(middleware.auth())
+
+router
+  .group(() => {
     router.get('/list', [CustomersController, 'index']).as('customer.index')
     router.get('/details/:id', [CustomersController, 'show']).as('customer.show')
     router.post('/create', [CustomersController, 'store']).as('customer.store')
@@ -59,12 +73,12 @@ router
 
 router
   .group(() => {
-    router.post('/create/:customerId', [PhonesController, 'store']).as('phone.store')
+    router.post('/create/customers/:customerId', [PhonesController, 'store']).as('phone.store')
     router
-      .patch('/update/:id/customer/:customerId', [PhonesController, 'update'])
+      .patch('/update/:id/customers/:customerId', [PhonesController, 'update'])
       .as('phone.update')
     router
-      .delete('/delete/:id/customer/:customerId', [PhonesController, 'destroy'])
+      .delete('/delete/:id/customers/:customerId', [PhonesController, 'destroy'])
       .as('phone.destroy')
   })
   .prefix('phones')
