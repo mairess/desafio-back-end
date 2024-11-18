@@ -25,7 +25,7 @@ export default class Customer extends BaseModel {
   declare updatedAt: DateTime
 
   @hasMany(() => Address)
-  declare address: HasMany<typeof Address>
+  declare addresses: HasMany<typeof Address>
 
   @hasMany(() => Phone)
   declare phones: HasMany<typeof Phone>

@@ -1,0 +1,91 @@
+import NotFoundException from '#exceptions/not_found_exception'
+import Customer from '#models/customer'
+import { RawQuery } from '@adonisjs/lucid/types/querybuilder'
+import { CustomerDataType } from '../types/customer.js'
+import db from '@adonisjs/lucid/services/db'
+
+export default class CustomerService {
+  async index(page: number, limit: number) {
+    const customers = await Customer.query()
+      .select('id', 'fullName', 'cpf', 'email')
+      .orderBy('id')
+      .paginate(page, limit)
+
+    return customers
+  }
+
+  async show(month: RawQuery, year: RawQuery, customerId: number) {
+    const customerSales = await Customer.query()
+      .where('id', customerId)
+      .preload('addresses')
+      .preload('phones')
+      .preload('sales', (salesQuery) => {
+        if (month) {
+          salesQuery.whereRaw('MONTH(created_at) = ?', [month])
+        }
+        if (year) {
+          salesQuery.whereRaw('YEAR(created_at) = ?', [year])
+        }
+
+        salesQuery.preload('product')
+
+        salesQuery.orderBy('createdAt', 'desc')
+      })
+      .first()
+
+    if (!customerSales) {
+      throw new NotFoundException('Customer', customerId.toString())
+    }
+
+    return customerSales.serialize({
+      relations: {
+        addresses: { fields: { omit: ['customerId'] } },
+        phones: { fields: { omit: ['customerId'] } },
+        sales: {
+          fields: { omit: ['customerId', 'productId', 'updatedAt'] },
+          relations: {
+            product: {
+              fields: { omit: ['customerId', 'createdAt', 'updatedAt', 'deletedAt', 'stock'] },
+            },
+          },
+        },
+      },
+    })
+  }
+
+  async store(customerData: CustomerDataType) {
+    const createdCustomer = await Customer.create(customerData)
+
+    return createdCustomer.serialize({ fields: { omit: ['createdAt', 'updatedAt'] } })
+  }
+
+  async update(customerId: number, customerData: CustomerDataType) {
+    const customer = await Customer.find(customerId)
+
+    if (!customer) {
+      throw new NotFoundException('Customer', customerId.toString())
+    }
+
+    const customerUpdate = await customer.merge(customerData).save()
+
+    return customerUpdate.serialize({ fields: { omit: ['createdAt', 'updatedAt'] } })
+  }
+
+  async destroy(customerId: number) {
+    const customer = await Customer.find(customerId)
+
+    if (!customer) {
+      throw new NotFoundException('Customer', customerId.toString())
+    }
+
+    await db.transaction(async (trx) => {
+      await customer.related('addresses').query().useTransaction(trx).delete()
+
+      await customer.related('phones').query().useTransaction(trx).delete()
+
+      await customer.related('sales').query().useTransaction(trx).delete()
+
+      await customer.useTransaction(trx).delete()
+    })
+  }
+}
