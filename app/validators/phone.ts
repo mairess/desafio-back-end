@@ -27,5 +27,5 @@ export const updatePhoneValidator = vine.compile(
 )
 
 vine.messagesProvider = new SimpleMessagesProvider({
-  regex: 'The {{ field }} must contain exactly 11 digits',
+  regex: 'The {{ field }} field must contain exactly 11 digits',
 })

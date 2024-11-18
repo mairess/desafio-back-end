@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",
-    "migrate": "node ace migration:run",
+    "migrate": "node ace migration:refresh",
     "seed": "node ace db:seed",
     "migrate:fresh": "node ace migration:run",
     "dev": "npm run migrate:fresh && npm run seed && node ace serve --hmr",
