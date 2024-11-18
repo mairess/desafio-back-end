@@ -1,4 +1,3 @@
-import NotBelongException from '#exceptions/not_belong_exception'
 import NotFoundException from '#exceptions/not_found_exception'
 import Address from '#models/address'
 import Customer from '#models/customer'
@@ -35,15 +34,8 @@ export default class AddressesController {
       throw new NotFoundException('Customer', params.customerId.toString())
     }
 
-    if (!address) {
+    if (!address || address.customerId !== customer.id) {
       throw new NotFoundException('Address', params.id)
-    }
-
-    const addressId = address.id.toString()
-    const customerId = customer.id.toString()
-
-    if (addressId !== customerId) {
-      throw new NotBelongException('Address', addressId, 'Customer', customerId)
     }
 
     await address.merge(addressData).save()

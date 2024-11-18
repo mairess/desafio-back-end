@@ -1,7 +1,6 @@
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import ProductOutOfStockException from './product_out_of_stock_exception.js'
-import NotBelongException from './not_belong_exception.js'
 import NotFoundException from './not_found_exception.js'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
@@ -16,28 +15,15 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
-    const errorInstance = (error as NotBelongException) || NotFoundException
-    const entity = errorInstance.message.split(' ')[0].toLocaleLowerCase()
-
     if (error instanceof ProductOutOfStockException) {
       return ctx.response.status(error.status).send({
         errors: [{ message: error.message, rule: 'product.outOfStock', field: 'productId' }],
       })
     }
 
-    if (error instanceof NotBelongException) {
-      return ctx.response.status(error.status).send({
-        errors: [
-          {
-            message: error.message,
-            rule: `${entity}.notBelong`,
-            field: `${entity}Id`,
-          },
-        ],
-      })
-    }
-
     if (error instanceof NotFoundException) {
+      const entity = error.message.split(' ')[0].toLocaleLowerCase()
+
       return ctx.response.status(error.status).send({
         errors: [
           {

@@ -1,4 +1,3 @@
-import NotBelongException from '#exceptions/not_belong_exception'
 import NotFoundException from '#exceptions/not_found_exception'
 import Customer from '#models/customer'
 import Phone from '#models/phone'
@@ -33,15 +32,8 @@ export default class PhonesController {
       throw new NotFoundException('Customer', params.customerId)
     }
 
-    if (!phone) {
+    if (!phone || phone.id !== customer.id) {
       throw new NotFoundException('Phone', params.id)
-    }
-
-    const phoneId = phone.id.toString()
-    const customerId = customer.id.toString()
-
-    if (phoneId !== customerId) {
-      throw new NotBelongException('Phone', phoneId, 'Customer', customerId)
     }
 
     const phoneData = await request.validateUsing(updatePhoneValidator)
