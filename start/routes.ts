@@ -39,9 +39,7 @@ router
 router
   .group(() => {
     router.post('/create', [AddressesController, 'store']).as('address.store')
-    // router
-    //   .patch('/update/:id/customer/:customerId', [AddressesController, 'update'])
-    //   .as('address.update')
+    router.patch('/update/:id', [AddressesController, 'update']).as('address.update')
     // router
     //   .delete('/delete/:id/customer/:customerId', [AddressesController, 'destroy'])
     //   .as('address.destroy')

@@ -1,6 +1,8 @@
+import AddressNotFoundException from '#exceptions/address_not_found_exception'
 import CustomerNotFoundException from '#exceptions/customer_not_found_exception'
+import Address from '#models/address'
 import Customer from '#models/customer'
-import { createAddressValidator } from '#validators/address'
+import { createAddressValidator, updateAddressValidator } from '#validators/address'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class AddressesController {
@@ -23,30 +25,30 @@ export default class AddressesController {
     )
   }
 
-  //   async update({ request, response, params }: HttpContext) {
-  //     const customer = await Customer.find(params.customerId)
-  //     const phone = await Phone.find(params.id)
+  async update({ request, response, params }: HttpContext) {
+    const addressData = await request.validateUsing(updateAddressValidator)
 
-  //     if (!customer) {
-  //       throw new CustomerNotFoundException(params.customerId)
-  //     }
+    const customer = await Customer.find(addressData.customerId)
+    const address = await Address.find(params.id)
 
-  //     if (!phone || phone.customerId !== customer.id) {
-  //       throw new PhoneNotFoundException(params.id)
-  //     }
+    if (!customer) {
+      throw new CustomerNotFoundException(addressData.customerId.toString())
+    }
 
-  //     const phoneData = await request.validateUsing(updatePhoneValidator)
+    if (!address || address.customerId !== customer.id) {
+      throw new AddressNotFoundException(params.id)
+    }
 
-  //     await phone.merge(phoneData).save()
+    await address.merge(addressData).save()
 
-  //     return response.ok(
-  //       phone.serialize({
-  //         fields: {
-  //           omit: ['createdAt', 'updatedAt'],
-  //         },
-  //       })
-  //     )
-  //   }
+    return response.ok(
+      address.serialize({
+        fields: {
+          omit: ['createdAt', 'updatedAt'],
+        },
+      })
+    )
+  }
 
   //   async destroy({ response, params }: HttpContext) {
   //     const customer = await Customer.find(params.customerId)
