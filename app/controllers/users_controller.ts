@@ -1,4 +1,4 @@
-import UserNotFoundException from '#exceptions/user_not_found_exception'
+import NotFoundException from '#exceptions/not_found_exception'
 import User from '#models/user'
 import { updateUserValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -16,7 +16,7 @@ export default class UsersController {
   async update({ request, response, params }: HttpContext) {
     const user = await User.find(params.id)
 
-    if (!user) throw new UserNotFoundException(params.id)
+    if (!user) throw new NotFoundException('User', params.id)
 
     const userData = await request.validateUsing(updateUserValidator, {
       meta: { userId: user.id },
@@ -34,7 +34,7 @@ export default class UsersController {
   async destroy({ response, params }: HttpContext) {
     const user = await User.find(params.id)
 
-    if (!user) throw new UserNotFoundException(params.id)
+    if (!user) throw new NotFoundException('User', params.id)
 
     await user.delete()
 

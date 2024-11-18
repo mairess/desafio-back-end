@@ -1,12 +1,8 @@
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
-import CustomerNotFoundException from './customer_not_found_exception.js'
-import ProductNotFoundException from './product_not_found_exception.js'
 import ProductOutOfStockException from './product_out_of_stock_exception.js'
-import PhoneNotFoundException from './phone_not_found_exception.js'
-import SaleNotFoundException from './sale_not_found_exception.js'
-import UserNotFoundException from './user_not_found_exception.js'
-import AddressNotFoundException from './address_not_found_exception.js'
+import NotBelongException from './not_belong_exception.js'
+import NotFoundException from './not_found_exception.js'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -20,17 +16,8 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
-    if (error instanceof CustomerNotFoundException) {
-      return ctx.response.status(error.status).send({
-        errors: [{ message: error.message, rule: 'customer.notFound', field: 'customerId' }],
-      })
-    }
-
-    if (error instanceof ProductNotFoundException) {
-      return ctx.response.status(error.status).send({
-        errors: [{ message: error.message, rule: 'product.notFound', field: 'productId' }],
-      })
-    }
+    const errorInstance = (error as NotBelongException) || NotFoundException
+    const entity = errorInstance.message.split(' ')[0].toLocaleLowerCase()
 
     if (error instanceof ProductOutOfStockException) {
       return ctx.response.status(error.status).send({
@@ -38,27 +25,27 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       })
     }
 
-    if (error instanceof PhoneNotFoundException) {
+    if (error instanceof NotBelongException) {
       return ctx.response.status(error.status).send({
-        errors: [{ message: error.message, rule: 'phone.notFound', field: 'phoneId' }],
+        errors: [
+          {
+            message: error.message,
+            rule: `${entity}.notBelong`,
+            field: `${entity}Id`,
+          },
+        ],
       })
     }
 
-    if (error instanceof SaleNotFoundException) {
+    if (error instanceof NotFoundException) {
       return ctx.response.status(error.status).send({
-        errors: [{ message: error.message, rule: 'sale.notFound', field: 'saleId' }],
-      })
-    }
-
-    if (error instanceof UserNotFoundException) {
-      return ctx.response.status(error.status).send({
-        errors: [{ message: error.message, rule: 'user.notFound', field: 'userId' }],
-      })
-    }
-
-    if (error instanceof AddressNotFoundException) {
-      return ctx.response.status(error.status).send({
-        errors: [{ message: error.message, rule: 'address.notFound', field: 'addressId' }],
+        errors: [
+          {
+            message: error.message,
+            rule: `${entity}.notFound`,
+            field: `${entity}Id`,
+          },
+        ],
       })
     }
 
