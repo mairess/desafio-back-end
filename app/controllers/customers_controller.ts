@@ -14,7 +14,7 @@ export default class CustomersController {
       .orderBy('id')
       .paginate(page, limit)
 
-    response.ok(customers)
+    return response.ok(customers)
   }
 
   async show({ request, response, params }: HttpContext) {
@@ -41,7 +41,7 @@ export default class CustomersController {
       throw new NotFoundException('Customer', params.id)
     }
 
-    response.ok(
+    return response.ok(
       customerSales?.serialize({
         relations: {
           address: {

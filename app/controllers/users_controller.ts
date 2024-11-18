@@ -10,7 +10,7 @@ export default class UsersController {
 
     const users = await User.query().paginate(page, limit)
 
-    response.ok(users)
+    return response.ok(users)
   }
 
   async update({ request, response, params }: HttpContext) {
@@ -24,7 +24,7 @@ export default class UsersController {
 
     await user.merge(userData).save()
 
-    response.ok(
+    return response.ok(
       user.serialize({
         fields: { omit: ['createdAt', 'updatedAt'] },
       })

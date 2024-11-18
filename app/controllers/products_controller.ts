@@ -14,7 +14,7 @@ export default class ProductsController {
       .orderBy('name', 'asc')
       .paginate(page, limit)
 
-    response.ok(products)
+    return response.ok(products)
   }
 
   async show({ response, params }: HttpContext) {
@@ -24,7 +24,7 @@ export default class ProductsController {
       throw new NotFoundException('Product', params.id)
     }
 
-    response.ok(product)
+    return response.ok(product)
   }
 
   async store({ request, response }: HttpContext) {
@@ -52,7 +52,7 @@ export default class ProductsController {
 
     await product.merge(productData).save()
 
-    response.ok(
+    return response.ok(
       product.serialize({
         fields: {
           omit: ['createdAt', 'updatedAt', 'deletedAt'],

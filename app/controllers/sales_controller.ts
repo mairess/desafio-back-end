@@ -28,7 +28,7 @@ export default class SalesController {
       throw new NotFoundException('Sale', params.id)
     }
 
-    response.ok(sale.serialize({ fields: { omit: ['updatedAt'] } }))
+    return response.ok(sale.serialize({ fields: { omit: ['updatedAt'] } }))
   }
 
   async store({ request, response }: HttpContext) {
