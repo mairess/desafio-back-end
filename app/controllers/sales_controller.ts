@@ -1,6 +1,7 @@
 import CustomerNotFoundException from '#exceptions/customer_not_found_exception'
 import ProductNotFoundException from '#exceptions/product_not_found_exception'
 import ProductOutOfStockException from '#exceptions/product_out_of_stock_exception'
+import SaleNotFoundException from '#exceptions/sale_not_found_exception'
 import Customer from '#models/customer'
 import Product from '#models/product'
 import Sale from '#models/sale'
@@ -9,6 +10,29 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
 export default class SalesController {
+  async index({ request, response }: HttpContext) {
+    const page = request.input('page', 1)
+    const limit = request.input('limit', 10)
+
+    const sales = await Sale.query().orderBy('id', 'asc').paginate(page, limit)
+
+    return response.ok(sales.serialize({ fields: { omit: ['updatedAt'] } }))
+  }
+
+  async show({ response, params }: HttpContext) {
+    const sale = await Sale.query()
+      .where('id', params.id)
+      .preload('customer')
+      .preload('product')
+      .first()
+
+    if (!sale) {
+      throw new SaleNotFoundException(params.id)
+    }
+
+    response.ok(sale.serialize({ fields: { omit: ['updatedAt'] } }))
+  }
+
   async store({ request, response }: HttpContext) {
     const saleData = await request.validateUsing(createSaleValidator)
 
