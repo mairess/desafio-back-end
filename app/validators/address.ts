@@ -11,6 +11,7 @@ export const createAddressValidator = vine.compile(
       .trim()
       .regex(/^[A-Z]{2}$/),
     zipCode: vine.string().fixedLength(8),
+    country: vine.string().minLength(2),
   })
 )
 
@@ -26,6 +27,7 @@ export const updateAddressValidator = vine.compile(
       .regex(/^[A-Z]{2}$/)
       .optional(),
     zipCode: vine.string().fixedLength(8).optional(),
+    country: vine.string().minLength(2),
   })
 )
 

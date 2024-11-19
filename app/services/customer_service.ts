@@ -26,6 +26,7 @@ export default class CustomerService {
           'city',
           'state',
           'zipCode',
+          'country',
           'createdAt',
           'updatedAt'
         )
