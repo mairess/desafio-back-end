@@ -18,6 +18,7 @@ export default class extends BaseSchema {
       table.string('city').notNullable()
       table.string('state').notNullable()
       table.string('zip_code').notNullable()
+      table.string('country').notNullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()
     })
