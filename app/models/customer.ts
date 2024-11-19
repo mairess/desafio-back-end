@@ -9,7 +9,7 @@ export default class Customer extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column({ columnName: 'full_name' })
+  @column()
   declare fullName: string | null
 
   @column()
