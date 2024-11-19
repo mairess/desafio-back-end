@@ -1,10 +1,7 @@
-import NotFoundException from '#exceptions/not_found_exception'
-import Customer from '#models/customer'
 import CustomerService from '#services/customer_service'
 import { createCustomerValidator, updateCustomerValidator } from '#validators/customer'
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 @inject()
 export default class CustomersController {
   constructor(protected customerService: CustomerService) {}

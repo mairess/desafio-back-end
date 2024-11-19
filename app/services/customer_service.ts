@@ -17,8 +17,22 @@ export default class CustomerService {
   async show(month: RawQuery, year: RawQuery, customerId: number) {
     const customerSales = await Customer.query()
       .where('id', customerId)
-      .preload('addresses')
-      .preload('phones')
+      .preload('addresses', (addressQuery) => {
+        addressQuery.select(
+          'id',
+          'street',
+          'number',
+          'neighborhood',
+          'city',
+          'state',
+          'zipCode',
+          'createdAt',
+          'updatedAt'
+        )
+      })
+      .preload('phones', (phoneQuery) => {
+        phoneQuery.select('id', 'phoneNumber', 'createdAt', 'updatedAt')
+      })
       .preload('sales', (salesQuery) => {
         if (month) {
           salesQuery.whereRaw('MONTH(created_at) = ?', [month])
@@ -27,7 +41,9 @@ export default class CustomerService {
           salesQuery.whereRaw('YEAR(created_at) = ?', [year])
         }
 
-        salesQuery.preload('product')
+        salesQuery.preload('product', (productQuery) => {
+          productQuery.select('id', 'name', 'description', 'price')
+        })
 
         salesQuery.orderBy('createdAt', 'desc')
       })
@@ -37,20 +53,7 @@ export default class CustomerService {
       throw new NotFoundException('Customer', customerId.toString())
     }
 
-    return customerSales.serialize({
-      relations: {
-        addresses: { fields: { omit: ['customerId'] } },
-        phones: { fields: { omit: ['customerId'] } },
-        sales: {
-          fields: { omit: ['customerId', 'productId', 'updatedAt'] },
-          relations: {
-            product: {
-              fields: { omit: ['customerId', 'createdAt', 'updatedAt', 'deletedAt', 'stock'] },
-            },
-          },
-        },
-      },
-    })
+    return customerSales
   }
 
   async store(customerData: CustomerDataType) {

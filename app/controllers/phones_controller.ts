@@ -1,67 +1,29 @@
-import NotFoundException from '#exceptions/not_found_exception'
-import Customer from '#models/customer'
-import Phone from '#models/phone'
+import PhoneService from '#services/phone_service'
 import { createPhoneValidator, updatePhoneValidator } from '#validators/phone'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
-
+@inject()
 export default class PhonesController {
+  constructor(protected phoneService: PhoneService) {}
+
   async store({ request, response, params }: HttpContext) {
-    const customer = await Customer.find(params.customerId)
     const phoneData = await request.validateUsing(createPhoneValidator)
 
-    if (!customer) {
-      throw new NotFoundException('Customer', params.customerId)
-    }
+    const phone = await this.phoneService.store(params.customerId, phoneData)
 
-    const phone = await customer.related('phones').create(phoneData)
-
-    return response.created(
-      phone.serialize({
-        fields: {
-          omit: ['createdAt', 'updatedAt'],
-        },
-      })
-    )
+    return response.created(phone)
   }
 
   async update({ request, response, params }: HttpContext) {
-    const customer = await Customer.find(params.customerId)
-    const phone = await Phone.find(params.id)
-
-    if (!customer) {
-      throw new NotFoundException('Customer', params.customerId)
-    }
-
-    if (!phone || phone.id !== customer.id) {
-      throw new NotFoundException('Phone', params.id)
-    }
-
     const phoneData = await request.validateUsing(updatePhoneValidator)
 
-    await phone.merge(phoneData).save()
+    const phone = await this.phoneService.update(params.id, params.customerId, phoneData)
 
-    return response.ok(
-      phone.serialize({
-        fields: {
-          omit: ['createdAt', 'updatedAt'],
-        },
-      })
-    )
+    return response.ok(phone)
   }
 
   async destroy({ response, params }: HttpContext) {
-    const customer = await Customer.find(params.customerId)
-    const phone = await Phone.find(params.id)
-
-    if (!customer) {
-      throw new NotFoundException('Customer', params.customerId)
-    }
-
-    if (!phone || phone.customerId !== customer.id) {
-      throw new NotFoundException('Phone', params.id)
-    }
-
-    await phone.delete()
+    await this.phoneService.destroy(params.id, params.customerId)
 
     return response.ok({ message: 'Phone deleted successfully!' })
   }
