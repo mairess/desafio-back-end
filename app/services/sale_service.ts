@@ -50,7 +50,7 @@ export default class SaleService {
       return Sale.create(salePayload, { client: trx })
     })
 
-    return createdSale.serialize({ fields: { omit: ['updatedAt'] } })
+    return createdSale.serialize({ fields: { omit: ['updatedAt', 'createdAt'] } })
   }
 
   private calculateTotalPrice(unitPrice: number, quantity: number) {
