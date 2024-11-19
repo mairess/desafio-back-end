@@ -2,6 +2,7 @@ import CustomerService from '#services/customer_service'
 import { createCustomerValidator, updateCustomerValidator } from '#validators/customer'
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
+
 @inject()
 export default class CustomersController {
   constructor(protected customerService: CustomerService) {}
