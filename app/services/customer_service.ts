@@ -55,6 +55,7 @@ export default class CustomerService {
       relations: {
         sales: { fields: { omit: ['customerId', 'productId', 'updatedAt'] } },
         phones: { fields: { omit: ['customerId'] } },
+        addresses: { fields: { omit: ['customerId'] } },
       },
     })
   }
