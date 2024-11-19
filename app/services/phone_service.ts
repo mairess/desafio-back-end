@@ -7,9 +7,7 @@ export default class PhoneService {
   async store(customerId: number, phoneData: PhoneDataType) {
     const customer = await Customer.find(customerId)
 
-    if (!customer) {
-      throw new NotFoundException('Customer', customerId.toString())
-    }
+    if (!customer) throw new NotFoundException('Customer', customerId.toString())
 
     const phone = await customer.related('phones').create(phoneData)
 
@@ -22,13 +20,10 @@ export default class PhoneService {
     const customer = await Customer.find(customerId)
     const phone = await Phone.find(phoneId)
 
-    if (!customer) {
-      throw new NotFoundException('Customer', customerId.toString())
-    }
+    if (!customer) throw new NotFoundException('Customer', customerId.toString())
 
-    if (!phone || phone.customerId !== customer.id) {
+    if (!phone || phone.customerId !== customer.id)
       throw new NotFoundException('Phone', phoneId.toString())
-    }
 
     await phone.merge(phoneData).save()
 
@@ -39,13 +34,10 @@ export default class PhoneService {
     const customer = await Customer.find(customerId)
     const phone = await Phone.find(phoneId)
 
-    if (!customer) {
-      throw new NotFoundException('Customer', customerId.toString())
-    }
+    if (!customer) throw new NotFoundException('Customer', customerId.toString())
 
-    if (!phone || phone.customerId !== customer.id) {
+    if (!phone || phone.customerId !== customer.id)
       throw new NotFoundException('Phone', phoneId.toString())
-    }
 
     await phone.delete()
   }

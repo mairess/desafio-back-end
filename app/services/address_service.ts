@@ -20,9 +20,8 @@ export default class AddressService {
 
     if (!customer) throw new NotFoundException('Customer', customerId.toString())
 
-    if (!address || address.customerId !== customer.id) {
+    if (!address || address.customerId !== customer.id)
       throw new NotFoundException('Address', addressId.toString())
-    }
 
     await address.merge(addressData).save()
 
@@ -35,9 +34,8 @@ export default class AddressService {
 
     if (!customer) throw new NotFoundException('Customer', customerId.toString())
 
-    if (!address || address.customerId !== customer.id) {
+    if (!address || address.customerId !== customer.id)
       throw new NotFoundException('Address', addressId.toString())
-    }
 
     await address.delete()
   }
