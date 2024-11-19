@@ -20,5 +20,5 @@ export default class Phone extends BaseModel {
   declare updatedAt: DateTime
 
   @belongsTo(() => Customer)
-  declare client: BelongsTo<typeof Customer>
+  declare customer: BelongsTo<typeof Customer>
 }

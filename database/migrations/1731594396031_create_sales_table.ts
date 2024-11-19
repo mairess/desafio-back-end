@@ -6,13 +6,23 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('customer_id').unsigned()
-      table.integer('product_id').unsigned()
-      table.integer('quantity')
-      table.float('unit_price')
-      table.float('total_price')
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table
+        .integer('customer_id')
+        .unsigned()
+        .references('id')
+        .inTable('customers')
+        .onDelete('CAsCADE')
+      table
+        .integer('product_id')
+        .unsigned()
+        .references('id')
+        .inTable('products')
+        .onDelete('CASCADE')
+      table.integer('quantity').notNullable()
+      table.decimal('unit_price', 10, 2).notNullable()
+      table.decimal('total_price', 10, 2).notNullable()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
     })
   }
 
