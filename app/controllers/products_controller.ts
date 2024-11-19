@@ -1,28 +1,22 @@
-import NotFoundException from '#exceptions/not_found_exception'
-import Product from '#models/product'
+import ProductService from '#services/product_service'
 import { createProductValidator, updateProductValidator } from '#validators/product'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
-import { DateTime } from 'luxon'
-
+@inject()
 export default class ProductsController {
+  constructor(protected productService: ProductService) {}
+
   async index({ response, request }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 50)
 
-    const products = await Product.query()
-      .select('id', 'name', 'description', 'price')
-      .orderBy('name', 'asc')
-      .paginate(page, limit)
+    const products = await this.productService.index(page, limit)
 
     return response.ok(products)
   }
 
   async show({ response, params }: HttpContext) {
-    const product = await Product.query().where('id', params.id).first()
-
-    if (!product) {
-      throw new NotFoundException('Product', params.id)
-    }
+    const product = await this.productService.show(params.id)
 
     return response.ok(product)
   }
@@ -30,50 +24,22 @@ export default class ProductsController {
   async store({ request, response }: HttpContext) {
     const productData = await request.validateUsing(createProductValidator)
 
-    const createdProduct = await Product.create(productData)
+    const createdProduct = await this.productService.store(productData)
 
-    return response.created(
-      createdProduct.serialize({
-        fields: {
-          omit: ['createdAt', 'updatedAt'],
-        },
-      })
-    )
+    return response.created(createdProduct)
   }
 
   async update({ request, response, params }: HttpContext) {
-    const product = await Product.find(params.id)
-
-    if (!product) {
-      throw new NotFoundException('Product', params.id)
-    }
-
     const productData = await request.validateUsing(updateProductValidator)
 
-    await product.merge(productData).save()
+    const product = await this.productService.update(params.id, productData)
 
-    return response.ok(
-      product.serialize({
-        fields: {
-          omit: ['createdAt', 'updatedAt', 'deletedAt'],
-        },
-      })
-    )
+    return response.ok(product)
   }
 
   async destroy({ response, params }: HttpContext) {
-    const product = await Product.find(params.id)
+    await this.productService.destroy(params.id)
 
-    if (!product || product.deletedAt !== null) {
-      throw new NotFoundException('Product', params.id)
-    }
-
-    product.deletedAt = DateTime.now()
-
-    await product.save()
-
-    return response.ok({
-      message: 'Product deleted successfully!',
-    })
+    return response.ok({ message: 'Product deleted successfully!' })
   }
 }

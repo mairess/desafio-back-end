@@ -1,18 +1,15 @@
-import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import { loginValidator, registerValidator } from '#validators/auth'
-
+import { inject } from '@adonisjs/core'
+import AuthService from '#services/auth_service'
+@inject()
 export default class AuthController {
+  constructor(protected authService: AuthService) {}
+
   async register({ request, response }: HttpContext) {
     const userData = await request.validateUsing(registerValidator)
 
-    const createdUser = await User.create(userData)
-
-    const user = createdUser.serialize({
-      fields: {
-        omit: ['createdAt', 'updatedAt'],
-      },
-    })
+    const user = await this.authService.register(userData)
 
     return response.created(user)
   }
@@ -20,24 +17,20 @@ export default class AuthController {
   async login({ request, response }: HttpContext) {
     const { email, password } = await request.validateUsing(loginValidator)
 
-    const user = await User.verifyCredentials(email, password)
+    const token = await this.authService.login(email, password)
 
-    const userToken = await User.accessTokens.create(user)
-
-    return response.ok({ token: userToken.value?.release() })
+    return response.ok(token)
   }
 
   async logout({ auth, response }: HttpContext) {
-    const user = auth.user!
-
-    await User.accessTokens.delete(user, user.currentAccessToken.identifier)
+    await this.authService.logout(auth)
 
     return response.ok({ message: 'Logged out successfully!' })
   }
 
   async me({ auth, response }: HttpContext) {
-    await auth.check()
+    const loggedUser = await this.authService.me(auth)
 
-    return response.ok(auth.user)
+    return response.ok(loggedUser)
   }
 }
