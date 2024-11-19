@@ -51,7 +51,12 @@ export default class CustomerService {
 
     if (!customerSales) throw new NotFoundException('Customer', customerId)
 
-    return customerSales
+    return customerSales.serialize({
+      relations: {
+        sales: { fields: { omit: ['customerId', 'productId', 'updatedAt'] } },
+        phones: { fields: { omit: ['customerId'] } },
+      },
+    })
   }
 
   async store(customerData: CustomerDataType) {

@@ -26,7 +26,7 @@ export default class PhoneService {
 
     await phone.merge(phoneData).save()
 
-    return phone
+    return phone.serialize({ fields: { omit: ['createdAt', 'updatedAt'] } })
   }
 
   async destroy(phoneId: number, customerId: number) {
