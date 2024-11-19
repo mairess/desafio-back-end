@@ -6,7 +6,7 @@ import Sale from '#models/sale'
 import { SaleDataType } from '../types/sale.js'
 import db from '@adonisjs/lucid/services/db'
 
-export class SaleService {
+export default class SaleService {
   async index(page: number, limit: number) {
     const sales = await Sale.query().orderBy('id', 'asc').paginate(page, limit)
 

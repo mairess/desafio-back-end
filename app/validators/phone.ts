@@ -19,7 +19,7 @@ export const updatePhoneValidator = vine.compile(
       .string()
       .trim()
       .regex(/^\d{11}$/)
-      .unique(async (db, value, field) => {
+      .unique(async (db, value) => {
         const phone = await db.from('phones').where('phone_number', value).first()
         return !phone
       }),

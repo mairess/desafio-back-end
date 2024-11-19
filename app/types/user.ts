@@ -1,5 +1,5 @@
 export type UserDataType = {
-  fullName: string
-  email: string
-  password: string
+  fullName?: string
+  email?: string
+  password?: string
 }

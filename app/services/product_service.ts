@@ -3,7 +3,7 @@ import Product from '#models/product'
 import { DateTime } from 'luxon'
 import { ProductDataType } from '../types/product.js'
 
-export class ProductService {
+export default class ProductService {
   async index(page: number, limit: number) {
     const products = await Product.query()
       .select('id', 'name', 'description', 'price')

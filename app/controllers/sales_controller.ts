@@ -1,4 +1,4 @@
-import { SaleService } from '#services/sale_service'
+import SaleService from '#services/sale_service'
 import { createSaleValidator } from '#validators/sale'
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
