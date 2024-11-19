@@ -7,7 +7,7 @@ export default class AddressService {
   async store(customerId: number, addressData: AddressDataType) {
     const customer = await Customer.find(customerId)
 
-    if (!customer) throw new NotFoundException('Customer', customerId.toString())
+    if (!customer) throw new NotFoundException('Customer', customerId)
 
     const address = await customer.related('addresses').create(addressData)
 
@@ -18,10 +18,10 @@ export default class AddressService {
     const customer = await Customer.find(customerId)
     const address = await Address.find(addressId)
 
-    if (!customer) throw new NotFoundException('Customer', customerId.toString())
+    if (!customer) throw new NotFoundException('Customer', customerId)
 
     if (!address || address.customerId !== customer.id)
-      throw new NotFoundException('Address', addressId.toString())
+      throw new NotFoundException('Address', addressId)
 
     await address.merge(addressData).save()
 
@@ -32,10 +32,10 @@ export default class AddressService {
     const customer = await Customer.find(customerId)
     const address = await Address.find(addressId)
 
-    if (!customer) throw new NotFoundException('Customer', customerId.toString())
+    if (!customer) throw new NotFoundException('Customer', customerId)
 
     if (!address || address.customerId !== customer.id)
-      throw new NotFoundException('Address', addressId.toString())
+      throw new NotFoundException('Address', addressId)
 
     await address.delete()
   }

@@ -17,7 +17,7 @@ export class ProductService {
     const product = await Product.query().where('id', productId).first()
 
     if (!product) {
-      throw new NotFoundException('Product', productId.toString())
+      throw new NotFoundException('Product', productId)
     }
 
     return product
@@ -32,7 +32,7 @@ export class ProductService {
   async update(productId: number, productData: ProductDataType) {
     const product = await Product.find(productId)
 
-    if (!product) throw new NotFoundException('Product', productId.toString())
+    if (!product) throw new NotFoundException('Product', productId)
 
     await product.merge(productData).save()
 
@@ -42,8 +42,7 @@ export class ProductService {
   async destroy(productId: number) {
     const product = await Product.find(productId)
 
-    if (!product || product.deletedAt !== null)
-      throw new NotFoundException('Product', productId.toString())
+    if (!product || product.deletedAt !== null) throw new NotFoundException('Product', productId)
 
     product.deletedAt = DateTime.now()
 

@@ -1,72 +1,31 @@
-import NotFoundException from '#exceptions/not_found_exception'
-import ProductOutOfStockException from '#exceptions/product_out_of_stock_exception'
-import Customer from '#models/customer'
-import Product from '#models/product'
-import Sale from '#models/sale'
+import { SaleService } from '#services/sale_service'
 import { createSaleValidator } from '#validators/sale'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
-
+@inject()
 export default class SalesController {
+  constructor(protected saleService: SaleService) {}
+
   async index({ request, response }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 10)
 
-    const sales = await Sale.query().orderBy('id', 'asc').paginate(page, limit)
+    const sales = await this.saleService.index(page, limit)
 
-    return response.ok(sales.serialize({ fields: { omit: ['updatedAt'] } }))
+    return response.ok(sales)
   }
 
   async show({ response, params }: HttpContext) {
-    const sale = await Sale.query()
-      .where('id', params.id)
-      .preload('customer')
-      .preload('product')
-      .first()
+    const sale = await this.saleService.show(params.id)
 
-    if (!sale) {
-      throw new NotFoundException('Sale', params.id)
-    }
-
-    return response.ok(sale.serialize({ fields: { omit: ['updatedAt'] } }))
+    return response.ok(sale)
   }
 
   async store({ request, response }: HttpContext) {
     const saleData = await request.validateUsing(createSaleValidator)
 
-    const product = await Product.find(saleData.productId)
-    const customer = await Customer.find(saleData.customerId)
+    const createdSale = await this.saleService.store(saleData)
 
-    if (!product) {
-      throw new NotFoundException('Product', saleData.productId.toString())
-    }
-
-    if (product.stock === 0 || product.stock < saleData.quantity) {
-      throw new ProductOutOfStockException()
-    }
-
-    if (!customer) {
-      throw new NotFoundException('Customer', saleData.customerId.toString())
-    }
-
-    const totalPrice = this.calculateTotalPrice(product.price, saleData.quantity)
-
-    const salePayload = { ...saleData, unitPrice: product.price, totalPrice }
-
-    const createdSale = await db.transaction(async (trx) => {
-      product.stock -= saleData.quantity
-      await product.save()
-      return Sale.create(salePayload, { client: trx })
-    })
-
-    return response.created(
-      createdSale.serialize({
-        fields: { omit: ['updatedAt'] },
-      })
-    )
-  }
-
-  private calculateTotalPrice(unitPrice: number, quantity: number) {
-    return unitPrice * quantity
+    return response.created(createdSale)
   }
 }

@@ -49,7 +49,7 @@ export default class CustomerService {
       })
       .first()
 
-    if (!customerSales) throw new NotFoundException('Customer', customerId.toString())
+    if (!customerSales) throw new NotFoundException('Customer', customerId)
 
     return customerSales
   }
@@ -63,7 +63,7 @@ export default class CustomerService {
   async update(customerId: number, customerData: CustomerDataType) {
     const customer = await Customer.find(customerId)
 
-    if (!customer) throw new NotFoundException('Customer', customerId.toString())
+    if (!customer) throw new NotFoundException('Customer', customerId)
 
     const customerUpdate = await customer.merge(customerData).save()
 
@@ -73,7 +73,7 @@ export default class CustomerService {
   async destroy(customerId: number) {
     const customer = await Customer.find(customerId)
 
-    if (!customer) throw new NotFoundException('Customer', customerId.toString())
+    if (!customer) throw new NotFoundException('Customer', customerId)
 
     await db.transaction(async (trx) => {
       await customer.related('addresses').query().useTransaction(trx).delete()
