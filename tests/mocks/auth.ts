@@ -10,6 +10,44 @@ const userResponse = {
   id: 1,
 }
 
+const userLogin = {
+  email: 'rosa@mail.com',
+  password: 'password123',
+}
+
+const loginInvalidKeys = {
+  xx: 'rosa@mail.com',
+  zz: 'password123',
+}
+
+const loginInvalidKeyValues = {
+  errors: [
+    {
+      message: 'The email field must be defined',
+      rule: 'required',
+      field: 'email',
+    },
+    {
+      message: 'The password field must be defined',
+      rule: 'required',
+      field: 'password',
+    },
+  ],
+}
+
+const loginRequestInvalidCredentials = {
+  email: 'rosaxxx@mail.com',
+  password: 'xxxpassword123',
+}
+
+const loginResponseInvalidCredentials = {
+  errors: [
+    {
+      message: 'Invalid user credentials',
+    },
+  ],
+}
+
 const userRequestInvalidKeys = {
   x: 'Rosa Amarela de Souza',
   y: 'rosa@mail.com',
@@ -97,6 +135,11 @@ const userRequestInvalidRoute = {
 export default {
   userRequest,
   userResponse,
+  userLogin,
+  loginInvalidKeys,
+  loginInvalidKeyValues,
+  loginRequestInvalidCredentials,
+  loginResponseInvalidCredentials,
   userRequestInvalidKeys,
   userResponseInvalidKeys,
   userRequestInvalidKeyValues,
