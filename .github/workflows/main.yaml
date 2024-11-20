@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      NODE_ENV: development
+      NODE_ENV: test
       PORT: 3333
       APP_KEY: mySuperKeyWith16Characters
       HOST: localhost
@@ -17,8 +17,8 @@ jobs:
       DB_HOST: localhost
       DB_PORT: 3306
       DB_USER: root
-      DB_PASSWORD: your-db-password
-      DB_DATABASE: your-database-name
+      DB_PASSWORD: root
+      DB_DATABASE: test_db
 
     steps:
         - name: Checkout code
