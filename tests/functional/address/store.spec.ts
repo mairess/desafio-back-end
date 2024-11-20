@@ -4,6 +4,7 @@ import User from '#models/user'
 import mockAuth from '../../mocks/auth.js'
 import mockAddress from '../../mocks/address.js'
 import Customer from '#models/customer'
+import mockCustomer from '../../mocks/customer.js'
 
 test.group('Addresses create', (group) => {
   group.each.setup(() => testUtils.db().truncate())
@@ -11,11 +12,7 @@ test.group('Addresses create', (group) => {
   test('create an address', async ({ client, route }) => {
     const user = await User.create(mockAuth.userRequest)
 
-    await Customer.create({
-      fullName: 'Margarida Cheirosa dos Santos',
-      cpf: '110.100.101-00',
-      email: 'margarida@xample.com',
-    })
+    await Customer.create(mockCustomer.customerRequest)
 
     const customerId = 1
 
@@ -26,5 +23,19 @@ test.group('Addresses create', (group) => {
 
     response.assertStatus(201)
     response.assertBody(mockAddress.addressResponse)
+  })
+
+  test('attempt to create an address with customer not found', async ({ client, route }) => {
+    const user = await User.create(mockAuth.userRequest)
+
+    const customerId = 666
+
+    const response = await client
+      .post(route('address.store', { customerId }))
+      .json(mockAddress.addressRequest)
+      .loginAs(user)
+
+    response.assertStatus(404)
+    response.assertBody(mockCustomer.customerNotFound)
   })
 })
