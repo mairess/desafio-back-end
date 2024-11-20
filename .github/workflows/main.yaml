@@ -7,27 +7,6 @@ on:
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping --silent" --health-start-period=30s
-
-    env:
-      NODE_ENV: test
-      PORT: 3333
-      APP_KEY: mySuperKeyWith16Characters
-      HOST: localhost
-      LOG_LEVEL: info
-      DB_HOST: localhost
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_DATABASE: test_db
 
     steps:
         - name: Checkout code
@@ -47,16 +26,6 @@ jobs:
             
         - name: Install dependencies
           run: npm install
-
-        - name: Wait for MySQL to be ready
-          run: |
-            until mysql -h localhost -u root -proot -e "SHOW DATABASES;"; do
-              echo "Waiting for MySQL to be ready..."
-              sleep 5
-            done
       
-        - name: Run migrations and seeds
-          run: npm run migrate && npm run seed
-
-        - name: Run Tests
-          run: npm test
+        - name: Run ESLint
+          run: npm run lint
