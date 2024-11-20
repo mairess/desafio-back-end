@@ -38,12 +38,12 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
     if (error instanceof Exception && error.status === 404) {
       const entity = 'route'
-      const unknownRout = ctx.request.url()
+      const unknownRoute = ctx.request.url()
 
       return ctx.response.status(error.status).send({
         errors: [
           {
-            message: `The requested resource ${unknownRout} was not found`,
+            message: `The requested resource ${unknownRoute} was not found`,
             rule: `${entity}.notFound`,
             field: `route`,
           },
