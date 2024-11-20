@@ -8,6 +8,18 @@ jobs:
   lint-and-test:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_ENV: development
+      PORT: 3333
+      APP_KEY: mySuperKey
+      HOST: localhost
+      LOG_LEVEL: info
+      DB_HOST: localhost
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: your-db-password
+      DB_DATABASE: your-database-name
+
     steps:
         - name: Checkout code
           uses: actions/checkout@v3
