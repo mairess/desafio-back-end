@@ -1,21 +1,17 @@
-import { test } from '@japa/runner'
-import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#models/user'
+import testUtils from '@adonisjs/core/services/test_utils'
+import { test } from '@japa/runner'
 import mockAuth from '#tests/mocks/auth'
 
-test.group('Auth logout', (group) => {
+test.group('Auth me', (group) => {
   group.each.setup(() => testUtils.db().truncate())
-
-  test('logout the user', async ({ client, route, assert }) => {
+  test('example test', async ({ client, route }) => {
     const user = await User.create(mockAuth.userRequest)
 
-    const response = await client
-      .delete(route('auth.logout'))
-      .json(mockAuth.userLogin)
-      .loginAs(user)
+    const response = await client.get(route('auth.me')).loginAs(user)
 
     response.assertStatus(200)
-    assert.equal(response.body().message, 'Logged out successfully!')
+    response.assertBody(mockAuth.me)
   })
 
   test('attempt to logout without been authenticated', async ({ client, route }) => {

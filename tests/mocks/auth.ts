@@ -4,6 +4,16 @@ const userRequest = {
   password: 'password123',
 }
 
+const now = new Date()
+
+const me = {
+  id: 1,
+  fullName: 'Rosa Amarela de Souza',
+  email: 'rosa@mail.com',
+  createdAt: now,
+  updatedAt: now,
+}
+
 const userResponse = {
   fullName: 'Rosa Amarela de Souza',
   email: 'rosa@mail.com',
@@ -134,6 +144,7 @@ const userRequestInvalidRoute = {
 
 export default {
   userRequest,
+  me,
   userResponse,
   userLogin,
   loginInvalidKeys,
