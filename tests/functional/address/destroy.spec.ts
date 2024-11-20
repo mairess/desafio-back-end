@@ -27,8 +27,6 @@ test.group('Addresses remove', (group) => {
 
     const response = await client.delete(route('address.destroy', { id, customerId })).loginAs(user)
 
-    console.log(response)
-
     response.assertStatus(200)
     assert.equal(response.body().message, 'Address deleted successfully!')
   })
