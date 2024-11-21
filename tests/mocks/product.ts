@@ -45,9 +45,32 @@ const productInvalidKeysResponse = {
   ],
 }
 
+const productListResponse = {
+  meta: {
+    total: 1,
+    perPage: 50,
+    currentPage: 1,
+    lastPage: 1,
+    firstPage: 1,
+    firstPageUrl: '/?page=1',
+    lastPageUrl: '/?page=1',
+    nextPageUrl: null,
+    previousPageUrl: null,
+  },
+  data: [
+    {
+      name: 'Control car toy',
+      description: 'Very fast car fo your kids',
+      price: '5000.58',
+      id: 1,
+    },
+  ],
+}
+
 export default {
   productRequest,
   productResponse,
   productInvalidKeysRequest,
   productInvalidKeysResponse,
+  productListResponse,
 }
