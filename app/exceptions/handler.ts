@@ -2,6 +2,7 @@ import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import ProductOutOfStockException from './product_out_of_stock_exception.js'
 import NotFoundException from './not_found_exception.js'
+import { Exception } from '@adonisjs/core/exceptions'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -30,6 +31,21 @@ export default class HttpExceptionHandler extends ExceptionHandler {
             message: error.message,
             rule: `${entity}.notFound`,
             field: `${entity}Id`,
+          },
+        ],
+      })
+    }
+
+    if (error instanceof Exception && error.status === 404) {
+      const entity = 'route'
+      const unknownRoute = ctx.request.url()
+
+      return ctx.response.status(error.status).send({
+        errors: [
+          {
+            message: `The requested resource ${unknownRoute} was not found`,
+            rule: `${entity}.notFound`,
+            field: `route`,
           },
         ],
       })
