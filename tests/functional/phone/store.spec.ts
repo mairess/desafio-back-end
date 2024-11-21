@@ -44,7 +44,7 @@ test.group('Phone create', (group) => {
 
     const existingCustomer = await Customer.create(mockCustomer.customerRequest)
 
-    const phone = await Phone.create({
+    await Phone.create({
       ...mockPhone.phoneRequest,
       customerId: existingCustomer.id,
     })
