@@ -791,3 +791,5 @@ npm test
 - **JWT**: For authentication.
 
 - **Node.js**: Back-end runtime environment.
+
+- **Japa**: Back-end testing framework for Node.js.
