@@ -1,4 +1,4 @@
-FROM node:18.20-alpine
+FROM node:20.18.1-alpine3.19
 
 LABEL authors="maires"
 
