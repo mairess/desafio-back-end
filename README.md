@@ -50,12 +50,10 @@ DB_DATABASE=test_db
 
 ### Steps:
 
-1. Clone repository:
+1. Clone repository and install dependencies:
 
 ```BASH
-git clone git@github.com:mairess/desafio-back-end.git
-
-cd desafio-back-end
+git clone git@github.com:mairess/desafio-back-end.git && cd desafio-back-end && npm install
 ```
 
 2. Run application:
@@ -64,7 +62,7 @@ cd desafio-back-end
 docker compose up -d
 ```
 
-5. Run tests:
+3. Run tests:
 
 ```BASH
 npm test
@@ -74,21 +72,13 @@ npm test
 
 ### Steps:
 
-1. Clone repository:
+1. Clone repository and install dependencies:
 
 ```BASH
-git clone git@github.com:mairess/desafio-back-end.git
-
-cd desafio-back-end
+git clone git@github.com:mairess/desafio-back-end.git && cd desafio-back-end && npm install
 ```
 
-2. Install dependencies:
-
-```BASH
-npm install
-```
-
-3. Run database:
+2. Run database:
 
 ```BASH
 
@@ -96,7 +86,7 @@ docker compose up -d database
 
 ```
 
-4. Run project:
+3. Run project:
 
 ```BASH
 # before run the project, you have to await for database health check
@@ -104,7 +94,7 @@ docker compose up -d database
 npm run dev
 ```
 
-5. Run tests:
+4. Run tests:
 
 ```BASH
 npm test
